@@ -1,3 +1,77 @@
+## Reddit Ideas – MVP SaaS
+
+A minimal SaaS that tracks problem-centric subreddits, extracts signals, generates product ideas, and scores viability.
+
+### Tech
+
+- Next.js (App Router) + TypeScript + Tailwind
+- Supabase (Auth)
+- OpenAI (LLM)
+- Resend (emails)
+
+### Quick Start
+
+1. Clone the repo and install deps:
+   - `npm install`
+2. Create `.env.local` from `env.example` and set keys:
+   - `cp env.example .env.local`
+   - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `OPENAI_API_KEY`
+   - `RESEND_API_KEY`, `EMAIL_FROM`
+3. Run dev server:
+   - `npm run dev`
+
+### Supabase
+
+- Create a new Supabase project and get URL + anon key.
+- Auth: Enable Email/Password.
+
+Optional tables (SQL) if you choose to persist ideas/subscriptions:
+
+```sql
+-- or run web/supabase.sql
+create table if not exists ideas (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamp with time zone default now(),
+  topic text,
+  name text not null,
+  pitch text not null,
+  pain text,
+  sources jsonb,
+  score int
+);
+
+create table if not exists subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamp with time zone default now(),
+  email text not null unique,
+  topics text[] default '{}',
+  unsub_token text unique
+);
+```
+
+### Email
+
+- Add `RESEND_API_KEY` and `EMAIL_FROM` in env.
+- For local testing, endpoints exist but real sending is optional.
+
+### LLM
+
+- Put `OPENAI_API_KEY`. Model defaults to `gpt-4o-mini`.
+- Prompts are in `PROMPTS.md` and `src/lib/llm/prompts.ts`.
+
+### Structure
+
+- `src/app` – routes (pages + API)
+- `src/components` – UI components
+- `src/lib` – clients, utils, LLM, validation
+- `data` – mock Reddit snapshot
+
+### Cursor Artifacts
+
+- `.cursor/rules.md` – contribution rules
+- `PROMPTS.md` – key prompts
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
