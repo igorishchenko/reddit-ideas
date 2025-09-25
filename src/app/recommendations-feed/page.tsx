@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import mock from '@/mock/reddit.json';
 import type { RedditPost } from '@/types/reddit';
 
@@ -13,6 +13,14 @@ type Idea = {
   score: number; // 0-100
   topic: string; // e.g., devtools, health, education
   isNew?: boolean;
+  targetAudience?: string;
+  detailedScores?: {
+    painLevel: number;
+    willingnessToPay: number;
+    competition: number;
+    tam: number;
+    feasibility: number;
+  };
 };
 
 const TOPICS = [
@@ -50,23 +58,48 @@ export default function RecommendationsFeedPage() {
   const [query, setQuery] = useState('');
   const [topic, setTopic] = useState<(typeof TOPICS)[number]>('all');
   const [minScore, setMinScore] = useState(0);
+  const [ideas, setIdeas] = useState<Idea[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [useLLM, setUseLLM] = useState(false);
+
+  // Load ideas on mount and when useLLM changes
+  useEffect(() => {
+    if (useLLM) {
+      setLoading(true);
+      fetch('/api/generate-ideas', { method: 'POST' })
+        .then((res) => res.json())
+        .then((data) => {
+          setIdeas(data.ideas || []);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error('Failed to load LLM ideas:', err);
+          setIdeas([]);
+          setLoading(false);
+        });
+    } else {
+      setIdeas(DERIVED_IDEAS);
+    }
+  }, [useLLM]);
 
   const filteredIdeas = useMemo(() => {
-    return DERIVED_IDEAS.filter((idea) => {
-      const matchesTopic = topic === 'all' ? true : idea.topic === topic;
-      const matchesScore = idea.score >= minScore;
-      const q = query.trim().toLowerCase();
-      const matchesQuery = !q
-        ? true
-        : [
-            idea.name,
-            idea.pitch,
-            idea.painPoint,
-            idea.sources.map((s) => s.label).join(' '),
-          ].some((t) => t.toLowerCase().includes(q));
-      return matchesTopic && matchesScore && matchesQuery;
-    }).sort((a, b) => b.score - a.score);
-  }, [query, topic, minScore]);
+    return ideas
+      .filter((idea) => {
+        const matchesTopic = topic === 'all' ? true : idea.topic === topic;
+        const matchesScore = idea.score >= minScore;
+        const q = query.trim().toLowerCase();
+        const matchesQuery = !q
+          ? true
+          : [
+              idea.name,
+              idea.pitch,
+              idea.painPoint,
+              idea.sources.map((s) => s.label).join(' '),
+            ].some((t) => t.toLowerCase().includes(q));
+        return matchesTopic && matchesScore && matchesQuery;
+      })
+      .sort((a, b) => b.score - a.score);
+  }, [ideas, query, topic, minScore]);
 
   return (
     <main className='font-sans min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#f8fafc] via-white to-white dark:from-[#0b0b12] dark:via-[#0b0b12] dark:to-black'>
@@ -79,6 +112,22 @@ export default function RecommendationsFeedPage() {
             <p className='mt-2 text-sm text-gray-600 dark:text-gray-300'>
               Fresh product ideas sourced from trending Reddit discussions.
             </p>
+            <div className='mt-3 flex items-center gap-2'>
+              <label className='text-xs font-medium text-gray-700 dark:text-gray-300'>
+                <input
+                  type='checkbox'
+                  checked={useLLM}
+                  onChange={(e) => setUseLLM(e.target.checked)}
+                  className='mr-1'
+                />
+                Use AI-generated ideas
+              </label>
+              {loading && (
+                <span className='text-xs text-gray-500'>
+                  Generating ideas...
+                </span>
+              )}
+            </div>
           </div>
 
           <div className='flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center'>
@@ -153,6 +202,11 @@ export default function RecommendationsFeedPage() {
                   <p className='mt-1 text-sm text-gray-700 dark:text-gray-300'>
                     {idea.pitch}
                   </p>
+                  {idea.targetAudience && (
+                    <p className='mt-1 text-xs text-gray-600 dark:text-gray-400'>
+                      Target: {idea.targetAudience}
+                    </p>
+                  )}
                 </div>
 
                 <div className='shrink-0 text-right'>
@@ -162,6 +216,14 @@ export default function RecommendationsFeedPage() {
                   <div className='mt-0.5 text-xl font-bold text-gray-900 dark:text-white'>
                     {idea.score}
                   </div>
+                  {idea.detailedScores && (
+                    <div className='mt-2 grid grid-cols-2 gap-1 text-[10px] text-gray-500 dark:text-gray-400'>
+                      <div>Pain: {idea.detailedScores.painLevel}</div>
+                      <div>Pay: {idea.detailedScores.willingnessToPay}</div>
+                      <div>Comp: {idea.detailedScores.competition}</div>
+                      <div>TAM: {idea.detailedScores.tam}</div>
+                    </div>
+                  )}
                 </div>
               </div>
 
