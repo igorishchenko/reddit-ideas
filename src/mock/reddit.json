@@ -1,0 +1,49 @@
+{
+  "posts": [
+    {
+      "id": "t3_1",
+      "subreddit": "devops",
+      "title": "Anyone else fighting flaky CI tests?",
+      "url": "https://reddit.com/r/devops/comments/t3_1",
+      "upvotes": 412,
+      "numComments": 98,
+      "createdAt": "2025-09-20T12:00:00.000Z"
+    },
+    {
+      "id": "t3_2",
+      "subreddit": "ADHD",
+      "title": "Short routines that actually keep me on track",
+      "url": "https://reddit.com/r/ADHD/comments/t3_2",
+      "upvotes": 286,
+      "numComments": 67,
+      "createdAt": "2025-09-21T15:30:00.000Z"
+    },
+    {
+      "id": "t3_3",
+      "subreddit": "Teachers",
+      "title": "I spend hours turning chapters into lesson plans",
+      "url": "https://reddit.com/r/Teachers/comments/t3_3",
+      "upvotes": 198,
+      "numComments": 55,
+      "createdAt": "2025-09-22T09:15:00.000Z"
+    },
+    {
+      "id": "t3_4",
+      "subreddit": "freelance",
+      "title": "Clients ghosting me after sending invoice",
+      "url": "https://reddit.com/r/freelance/comments/t3_4",
+      "upvotes": 354,
+      "numComments": 120,
+      "createdAt": "2025-09-23T18:45:00.000Z"
+    },
+    {
+      "id": "t3_5",
+      "subreddit": "productivity",
+      "title": "Looking for accountability partners to get stuff done",
+      "url": "https://reddit.com/r/productivity/comments/t3_5",
+      "upvotes": 240,
+      "numComments": 84,
+      "createdAt": "2025-09-24T20:10:00.000Z"
+    }
+  ]
+}
