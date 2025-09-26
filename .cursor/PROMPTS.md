@@ -40,3 +40,27 @@
   Updated recommendations-feed with new feature
   Search, score filter, topic filter
   Created UI for the product ideas card
+
+  6.Ideas generation should be scheduled job
+  So I will fetch the data from reddit (posts)(get data from mock)
+  Then this job should send these posts to LLM to generate ideas
+  After the ideas and all needed data should be stored into the DB
+
+After when I open my feed page, I should fetch data from the DB and visualize it
+Output:
+Created admin route to fetch posts from reddit (mocked data)
+Updated feed to only fetch from the DB
+Added job status tracking and logging
+
+7. Email subscription API + Resend integration + unsubscribe flow
+   Implement Form to subscribe and set filters by topic (e.g., devtools, health, education, etc.).
+   Use Resend to implement subscription
+   Proper unsubscribe flow via link in the email or from user profile.
+   Output:
+   Created email subscription API with Resend
+   Added subscription form with topic filters
+   Implemented unsubscribe flow
+   Added email templates and notifications
+
+8. Wire UI to APIs and add basic styles
+   Output:

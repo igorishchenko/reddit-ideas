@@ -1,0 +1,57 @@
+name: Send Personalized Ideas to Subscribers
+
+on:
+  schedule:
+    # Run every minute
+    - cron: '* * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  send-personalized-emails:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Send Personalized Ideas
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        run: |
+          echo "📧 Starting personalized email job..."
+          response=$(curl -s -X POST "$NEXT_PUBLIC_SITE_URL/api/jobs/send-personalized-ideas")
+          echo "Response: $response"
+
+          # Check if the response contains success
+          if echo "$response" | grep -q '"success":true'; then
+            echo "✅ Personalized email job completed successfully"
+            # Extract sent count from response
+            sent_count=$(echo "$response" | grep -o '"sent":[0-9]*' | grep -o '[0-9]*')
+            echo "📬 Emails sent: $sent_count"
+          else
+            echo "❌ Personalized email job failed"
+            echo "$response"
+            exit 1
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Personalized email job failed at $(date)"
+          echo "Check the logs above for details"

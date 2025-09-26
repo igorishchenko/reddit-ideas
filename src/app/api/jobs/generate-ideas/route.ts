@@ -20,36 +20,16 @@ type LLMIdea = {
   topic: string;
 };
 
-type GeneratedIdea = {
-  id: string;
-  name: string;
-  pitch: string;
-  painPoint: string;
-  sources: { label: string; url: string }[];
-  score: number; // 0-100 overall score
-  topic: string;
-  isNew?: boolean;
-  targetAudience: string;
-  detailedScores: {
-    painLevel: number;
-    willingnessToPay: number;
-    competition: number;
-    tam: number;
-    feasibility: number;
-  };
-};
-
 function calculateOverallScore(scores: LLMIdea['scores']): number {
-  // Weighted average: pain (30%), willingness to pay (25%), TAM (20%), feasibility (15%), competition (10%)
   const weights = {
     painLevel: 0.3,
     willingnessToPay: 0.25,
     tam: 0.2,
     feasibility: 0.15,
-    competition: 0.1, // Lower competition = higher score
+    competition: 0.1,
   };
 
-  const competitionScore = 100 - scores.competition; // Invert competition score
+  const competitionScore = 100 - scores.competition;
 
   return Math.round(
     scores.painLevel * weights.painLevel +
@@ -61,10 +41,16 @@ function calculateOverallScore(scores: LLMIdea['scores']): number {
 }
 
 export async function POST() {
+  const startTime = Date.now();
+  let processedCount = 0;
+  let errorCount = 0;
+  const errors: string[] = [];
+
   try {
     const supabase = await getSupabaseServerClient();
     const posts = (mock as { posts: RedditPost[] }).posts;
-    const generatedIdeas: GeneratedIdea[] = [];
+
+    console.log(`[JOB] Starting idea generation for ${posts.length} posts`);
 
     // Check which posts haven't been processed yet
     const postIds = posts.map((p) => p.id);
@@ -77,29 +63,23 @@ export async function POST() {
     const unprocessedPosts = posts.filter((p) => !existingPostIds.has(p.id));
 
     if (unprocessedPosts.length === 0) {
-      // No new posts to process, return existing ideas
-      const { data: existingIdeas } = await supabase
-        .from('ideas')
-        .select(
-          `
-          *,
-          idea_scores(*),
-          idea_sources(*)
-        `
-        )
-        .order('overall_score', { ascending: false });
-
+      console.log('[JOB] No new posts to process');
       return NextResponse.json({
-        ideas: existingIdeas || [],
-        count: existingIdeas?.length || 0,
+        success: true,
         message: 'No new posts to process',
-        generatedAt: new Date().toISOString(),
+        processedCount: 0,
+        errorCount: 0,
+        duration: Date.now() - startTime,
       });
     }
+
+    console.log(`[JOB] Processing ${unprocessedPosts.length} new posts`);
 
     // Process each unprocessed post with LLM
     for (const post of unprocessedPosts) {
       try {
+        console.log(`[JOB] Processing post: ${post.id} - ${post.title}`);
+
         const prompt = formatPrompt(
           post.title,
           post.subreddit,
@@ -121,22 +101,19 @@ export async function POST() {
 
         const content = completion.choices[0]?.message?.content;
         if (!content) {
-          console.error('No content from OpenAI for post:', post.id);
-          continue;
+          throw new Error('No content from OpenAI');
         }
 
         // Parse JSON response (handle markdown code blocks)
         let llmIdea: LLMIdea;
         try {
-          // Remove markdown code blocks if present
           const jsonContent = content
             .replace(/```json\n?/g, '')
             .replace(/```\n?/g, '')
             .trim();
           llmIdea = JSON.parse(jsonContent);
         } catch (parseError) {
-          console.error('Failed to parse LLM response:', content);
-          continue;
+          throw new Error(`Failed to parse LLM response: ${parseError}`);
         }
 
         // Store in database
@@ -158,8 +135,7 @@ export async function POST() {
           .single();
 
         if (ideaError) {
-          console.error('Error inserting idea:', ideaError);
-          continue;
+          throw new Error(`Failed to insert idea: ${ideaError.message}`);
         }
 
         // Insert detailed scores
@@ -175,7 +151,10 @@ export async function POST() {
           });
 
         if (scoresError) {
-          console.error('Error inserting scores:', scoresError);
+          console.error(
+            `[JOB] Error inserting scores for idea ${ideaData.id}:`,
+            scoresError
+          );
         }
 
         // Insert source
@@ -191,7 +170,10 @@ export async function POST() {
           });
 
         if (sourceError) {
-          console.error('Error inserting source:', sourceError);
+          console.error(
+            `[JOB] Error inserting source for idea ${ideaData.id}:`,
+            sourceError
+          );
         }
 
         // Mark post as processed
@@ -205,49 +187,45 @@ export async function POST() {
           idea_generated: true,
         });
 
-        // Convert to our format for response
-        const idea: GeneratedIdea = {
-          id: ideaData.id,
-          name: llmIdea.name,
-          pitch: llmIdea.pitch,
-          painPoint: llmIdea.painPoint,
-          sources: [{ label: `r/${post.subreddit}`, url: post.url }],
-          score: overallScore,
-          topic: llmIdea.topic,
-          isNew: true,
-          targetAudience: llmIdea.targetAudience,
-          detailedScores: llmIdea.scores,
-        };
-
-        generatedIdeas.push(idea);
+        processedCount++;
+        console.log(
+          `[JOB] Successfully processed post ${post.id} -> idea ${ideaData.id}`
+        );
       } catch (error) {
-        console.error('Error processing post:', post.id, error);
+        errorCount++;
+        const errorMsg = `Error processing post ${post.id}: ${error}`;
+        console.error(`[JOB] ${errorMsg}`);
+        errors.push(errorMsg);
         continue;
       }
     }
 
-    // Get all ideas (newly generated + existing) sorted by score
-    const { data: allIdeas } = await supabase
-      .from('ideas')
-      .select(
-        `
-        *,
-        idea_scores(*),
-        idea_sources(*)
-      `
-      )
-      .order('overall_score', { ascending: false });
+    const duration = Date.now() - startTime;
+    console.log(
+      `[JOB] Completed in ${duration}ms. Processed: ${processedCount}, Errors: ${errorCount}`
+    );
 
     return NextResponse.json({
-      ideas: allIdeas || [],
-      count: allIdeas?.length || 0,
-      newlyGenerated: generatedIdeas.length,
-      generatedAt: new Date().toISOString(),
+      success: true,
+      message: `Processed ${processedCount} posts successfully`,
+      processedCount,
+      errorCount,
+      errors: errors.slice(0, 10), // Limit error details
+      duration,
     });
   } catch (error) {
-    console.error('Error in generate-ideas API:', error);
+    const duration = Date.now() - startTime;
+    console.error('[JOB] Fatal error:', error);
+
     return NextResponse.json(
-      { error: 'Failed to generate ideas' },
+      {
+        success: false,
+        error: 'Job failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
+        processedCount,
+        errorCount,
+        duration,
+      },
       { status: 500 }
     );
   }

@@ -12,7 +12,7 @@ Instructions:
 1. Identify the core problem/pain point
 2. Generate a specific SaaS product idea that solves this problem
 3. Score the idea on multiple dimensions (0-100 each)
-4. Return ONLY a valid JSON object with this exact structure:
+4. Return ONLY a valid JSON object (no markdown code blocks) with this exact structure:
 
 {
   "name": "Product name (max 50 chars)",

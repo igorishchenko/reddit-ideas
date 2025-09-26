@@ -37,7 +37,8 @@ export default function SignupPage() {
               setError(signUpError.message);
               return;
             }
-            router.replace('/recommendations-feed');
+            // Redirect to confirmation page
+            router.replace(`/confirm-email?email=${encodeURIComponent(email)}`);
           }}
         >
           <div>
