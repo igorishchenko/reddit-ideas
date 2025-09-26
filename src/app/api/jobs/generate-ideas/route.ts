@@ -53,14 +53,14 @@ export async function POST() {
     console.log(`[JOB] Starting idea generation for ${posts.length} posts`);
 
     // Check which posts haven't been processed yet
-    const postIds = posts.map((p) => p.id);
+    const postIds = posts.map(p => p.id);
     const { data: existingPosts } = await supabase
       .from('reddit_posts')
       .select('id')
       .in('id', postIds);
 
-    const existingPostIds = new Set(existingPosts?.map((p) => p.id) || []);
-    const unprocessedPosts = posts.filter((p) => !existingPostIds.has(p.id));
+    const existingPostIds = new Set(existingPosts?.map(p => p.id) || []);
+    const unprocessedPosts = posts.filter(p => !existingPostIds.has(p.id));
 
     if (unprocessedPosts.length === 0) {
       console.log('[JOB] No new posts to process');

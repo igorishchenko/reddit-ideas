@@ -24,7 +24,7 @@ export default function SignupPage() {
 
         <form
           className='mt-8 space-y-4'
-          onSubmit={async (e) => {
+          onSubmit={async e => {
             e.preventDefault();
             setError(null);
             setLoading(true);
@@ -53,7 +53,7 @@ export default function SignupPage() {
               type='email'
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               className='mt-1 w-full rounded-lg border border-gray-300 dark:border-white/15 bg-white/80 dark:bg-white/[.02] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-gray-900/20 dark:focus:ring-white/20'
             />
           </div>
@@ -69,7 +69,7 @@ export default function SignupPage() {
               type='password'
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               className='mt-1 w-full rounded-lg border border-gray-300 dark:border-white/15 bg-white/80 dark:bg-white/[.02] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-gray-900/20 dark:focus:ring-white/20'
             />
           </div>

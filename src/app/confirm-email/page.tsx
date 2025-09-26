@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function ConfirmEmailPage() {
   const [email, setEmail] = useState<string>('');
@@ -58,7 +58,7 @@ export default function ConfirmEmailPage() {
       } else {
         setResendMessage(data.error || 'Failed to resend email');
       }
-    } catch (error) {
+    } catch {
       setResendMessage('Network error. Please try again.');
     } finally {
       setResendLoading(false);

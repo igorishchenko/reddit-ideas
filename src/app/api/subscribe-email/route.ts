@@ -77,8 +77,8 @@ export async function POST(request: Request) {
                   <a href="${
                     process.env.NEXT_PUBLIC_SITE_URL
                   }/unsubscribe?token=${
-              existingSubscription.unsubscribe_token
-            }" 
+                    existingSubscription.unsubscribe_token
+                  }" 
                      style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
                     Unsubscribe
                   </a>
@@ -144,8 +144,8 @@ export async function POST(request: Request) {
             
             <div style="margin: 30px 0;">
               <a href="${process.env.NEXT_PUBLIC_SITE_URL}/unsubscribe?token=${
-          subscription.unsubscribe_token
-        }" 
+                subscription.unsubscribe_token
+              }" 
                  style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
                 Unsubscribe
               </a>

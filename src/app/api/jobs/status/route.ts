@@ -25,24 +25,30 @@ export async function GET() {
 
     // Calculate statistics
     const totalIdeas = ideas?.length || 0;
-    const newIdeas = ideas?.filter((idea) => idea.is_new).length || 0;
+    const newIdeas = ideas?.filter(idea => idea.is_new).length || 0;
     const totalPosts = posts?.length || 0;
     const processedPosts =
-      posts?.filter((post) => post.idea_generated).length || 0;
+      posts?.filter(post => post.idea_generated).length || 0;
 
     // Group by topic
     const ideasByTopic =
-      ideas?.reduce((acc, idea) => {
-        acc[idea.topic] = (acc[idea.topic] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>) || {};
+      ideas?.reduce(
+        (acc, idea) => {
+          acc[idea.topic] = (acc[idea.topic] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ) || {};
 
     // Group by subreddit
     const postsBySubreddit =
-      posts?.reduce((acc, post) => {
-        acc[post.subreddit] = (acc[post.subreddit] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>) || {};
+      posts?.reduce(
+        (acc, post) => {
+          acc[post.subreddit] = (acc[post.subreddit] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ) || {};
 
     // Average score
     const avgScore =
@@ -56,7 +62,7 @@ export async function GET() {
     // Recent activity (last 24 hours)
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const recentIdeas =
-      ideas?.filter((idea) => new Date(idea.created_at) > new Date(oneDayAgo))
+      ideas?.filter(idea => new Date(idea.created_at) > new Date(oneDayAgo))
         .length || 0;
 
     return NextResponse.json({

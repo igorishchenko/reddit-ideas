@@ -131,19 +131,16 @@ You can add Slack/Discord notifications on failure:
 ### Common Issues
 
 1. **Workflow not running**
-
    - Check if workflows are enabled
    - Verify all secrets are configured
    - Check GitHub Actions usage limits
 
 2. **API calls failing**
-
    - Verify `NEXT_PUBLIC_SITE_URL` is correct
    - Check if your app is deployed and accessible
    - Verify API endpoints are working
 
 3. **Database errors**
-
    - Check Supabase connection
    - Verify service role key has proper permissions
    - Check RLS policies
@@ -156,7 +153,6 @@ You can add Slack/Discord notifications on failure:
 ### Debug Steps
 
 1. **Check workflow logs**
-
    - Go to Actions → Select workflow → Select run
    - Review step-by-step execution logs
 
@@ -188,13 +184,11 @@ You can add Slack/Discord notifications on failure:
 ## 🎯 Next Steps
 
 1. **Monitor Performance**
-
    - Track workflow execution times
    - Monitor API usage and costs
    - Check email delivery rates
 
 2. **Add Monitoring**
-
    - Set up alerts for workflow failures
    - Monitor application health
    - Track user engagement

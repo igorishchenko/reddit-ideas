@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
 import { openai } from '@/lib/openai';
 import { formatPrompt } from '@/lib/prompts';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 import mock from '@/mock/reddit.json';
 import type { RedditPost } from '@/types/reddit';
+import { NextResponse } from 'next/server';
 
 type LLMIdea = {
   name: string;
@@ -67,14 +67,14 @@ export async function POST() {
     const generatedIdeas: GeneratedIdea[] = [];
 
     // Check which posts haven't been processed yet
-    const postIds = posts.map((p) => p.id);
+    const postIds = posts.map(p => p.id);
     const { data: existingPosts } = await supabase
       .from('reddit_posts')
       .select('id')
       .in('id', postIds);
 
-    const existingPostIds = new Set(existingPosts?.map((p) => p.id) || []);
-    const unprocessedPosts = posts.filter((p) => !existingPostIds.has(p.id));
+    const existingPostIds = new Set(existingPosts?.map(p => p.id) || []);
+    const unprocessedPosts = posts.filter(p => !existingPostIds.has(p.id));
 
     if (unprocessedPosts.length === 0) {
       // No new posts to process, return existing ideas
@@ -134,7 +134,7 @@ export async function POST() {
             .replace(/```\n?/g, '')
             .trim();
           llmIdea = JSON.parse(jsonContent);
-        } catch (parseError) {
+        } catch {
           console.error('Failed to parse LLM response:', content);
           continue;
         }

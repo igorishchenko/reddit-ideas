@@ -74,13 +74,11 @@ schedule:
 ## 🚨 Important Notes
 
 1. **GitHub Actions Limits**
-
    - Free accounts: 2,000 minutes/month
    - Every minute = 1,440 minutes/day
    - Monitor usage in GitHub Settings
 
 2. **API Rate Limits**
-
    - OpenAI API: Check your tier limits
    - Resend: Check email sending limits
    - Supabase: Check database operation limits

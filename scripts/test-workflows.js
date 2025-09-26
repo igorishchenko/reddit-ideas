@@ -18,9 +18,9 @@ async function makeRequest(url, options = {}) {
     const isHttps = url.startsWith('https://');
     const client = isHttps ? https : http;
 
-    const req = client.request(url, options, (res) => {
+    const req = client.request(url, options, res => {
       let data = '';
-      res.on('data', (chunk) => (data += chunk));
+      res.on('data', chunk => (data += chunk));
       res.on('end', () => {
         try {
           const jsonData = JSON.parse(data);
@@ -81,7 +81,7 @@ async function testSendPersonalizedEmails() {
       console.log(`   Emails sent: ${result.data.sent || 0}`);
       if (result.data.errors && result.data.errors.length > 0) {
         console.log(`   Errors: ${result.data.errors.length}`);
-        result.data.errors.slice(0, 3).forEach((error) => {
+        result.data.errors.slice(0, 3).forEach(error => {
           console.log(`   - ${error}`);
         });
       }

@@ -45,7 +45,7 @@ export default function RecommendationsFeedPage() {
 
   // Subscribe to idea
   const handleSubscribe = async (ideaId: string) => {
-    setSubscribing((prev) => new Set(prev).add(ideaId));
+    setSubscribing(prev => new Set(prev).add(ideaId));
     try {
       const response = await fetch('/api/subscribe', {
         method: 'POST',
@@ -54,12 +54,12 @@ export default function RecommendationsFeedPage() {
       });
 
       if (response.ok) {
-        setSubscribedIdeas((prev) => new Set(prev).add(ideaId));
+        setSubscribedIdeas(prev => new Set(prev).add(ideaId));
       }
     } catch (error) {
       console.error('Failed to subscribe:', error);
     } finally {
-      setSubscribing((prev) => {
+      setSubscribing(prev => {
         const newSet = new Set(prev);
         newSet.delete(ideaId);
         return newSet;
@@ -69,7 +69,7 @@ export default function RecommendationsFeedPage() {
 
   // Unsubscribe from idea
   const handleUnsubscribe = async (ideaId: string) => {
-    setSubscribing((prev) => new Set(prev).add(ideaId));
+    setSubscribing(prev => new Set(prev).add(ideaId));
     try {
       const response = await fetch('/api/subscribe', {
         method: 'DELETE',
@@ -78,7 +78,7 @@ export default function RecommendationsFeedPage() {
       });
 
       if (response.ok) {
-        setSubscribedIdeas((prev) => {
+        setSubscribedIdeas(prev => {
           const newSet = new Set(prev);
           newSet.delete(ideaId);
           return newSet;
@@ -87,7 +87,7 @@ export default function RecommendationsFeedPage() {
     } catch (error) {
       console.error('Failed to unsubscribe:', error);
     } finally {
-      setSubscribing((prev) => {
+      setSubscribing(prev => {
         const newSet = new Set(prev);
         newSet.delete(ideaId);
         return newSet;
@@ -101,17 +101,17 @@ export default function RecommendationsFeedPage() {
     setError(null);
     // Always fetch from database
     fetch('/api/ideas')
-      .then((res) => {
+      .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         return res.json();
       })
-      .then((data) => {
+      .then(data => {
         setIdeas(data.ideas || []);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error('Failed to load ideas:', err);
         setError('Failed to load ideas. Please try again.');
         setIdeas([]);
@@ -121,7 +121,7 @@ export default function RecommendationsFeedPage() {
 
   const filteredIdeas = useMemo(() => {
     return ideas
-      .filter((idea) => {
+      .filter(idea => {
         const matchesTopic = topic === 'all' ? true : idea.topic === topic;
         const matchesScore = idea.score >= minScore;
         const q = query.trim().toLowerCase();
@@ -131,8 +131,8 @@ export default function RecommendationsFeedPage() {
               idea.name,
               idea.pitch,
               idea.painPoint,
-              idea.sources.map((s) => s.label).join(' '),
-            ].some((t) => t.toLowerCase().includes(q));
+              idea.sources.map(s => s.label).join(' '),
+            ].some(t => t.toLowerCase().includes(q));
         return matchesTopic && matchesScore && matchesQuery;
       })
       .sort((a, b) => b.score - a.score);
@@ -220,12 +220,12 @@ export default function RecommendationsFeedPage() {
                 </label>
                 <select
                   value={topic}
-                  onChange={(e) =>
+                  onChange={e =>
                     setTopic(e.target.value as (typeof TOPICS)[number])
                   }
                   className='rounded-full border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/[.02] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none'
                 >
-                  {TOPICS.map((t) => (
+                  {TOPICS.map(t => (
                     <option key={t} value={t}>
                       {t}
                     </option>
@@ -242,7 +242,7 @@ export default function RecommendationsFeedPage() {
                   min={0}
                   max={100}
                   value={minScore}
-                  onChange={(e) => setMinScore(Number(e.target.value) || 0)}
+                  onChange={e => setMinScore(Number(e.target.value) || 0)}
                   className='w-[88px] rounded-full border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/[.02] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none'
                 />
               </div>
@@ -254,7 +254,7 @@ export default function RecommendationsFeedPage() {
                 <input
                   placeholder='e.g., invoice, ADHD, CI'
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={e => setQuery(e.target.value)}
                   className='w-full sm:w-[220px] rounded-full border border-gray-300 dark:border-white/20 bg-white/80 dark:bg-white/[.02] px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none'
                 />
               </div>
@@ -262,7 +262,7 @@ export default function RecommendationsFeedPage() {
           </div>
 
           <div className='mt-8 grid gap-4'>
-            {filteredIdeas.map((idea) => (
+            {filteredIdeas.map(idea => (
               <article
                 key={idea.id}
                 className='rounded-2xl border border-black/[.06] dark:border-white/[.08] bg-white/80 dark:bg-white/[.02] p-5 backdrop-blur'

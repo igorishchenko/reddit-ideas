@@ -24,11 +24,9 @@
   After login / successful registration - redirect to the `/recommendations-feed` page
   After logout - redirect user to `/` page
   Output:
-  Created login, logout pages, added logic for registration and login
-
-  5. Implement ideas feed UI with filters and badges
-     Use page from the context to implement it there
-     Recommendations feed: A list of fresh product ideas with filters by topic (e.g., devtools, health, education, etc.). Fields:
+  Created login, logout pages, added logic for registration and login 5. Implement ideas feed UI with filters and badges
+  Use page from the context to implement it there
+  Recommendations feed: A list of fresh product ideas with filters by topic (e.g., devtools, health, education, etc.). Fields:
 
 - Idea name
 - Short pitch (1–2 sentences)

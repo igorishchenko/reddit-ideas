@@ -62,7 +62,7 @@ export async function POST() {
         // Filter ideas by subscription topics
         const filteredIdeas =
           subscription.topics.length > 0
-            ? ideas.filter((idea) => subscription.topics.includes(idea.topic))
+            ? ideas.filter(idea => subscription.topics.includes(idea.topic))
             : ideas;
 
         if (filteredIdeas.length === 0) {
@@ -72,7 +72,7 @@ export async function POST() {
         // Generate email content
         const ideasHtml = filteredIdeas
           .map(
-            (idea) => `
+            idea => `
           <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 16px 0; background: #f9fafb;">
             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
               <h3 style="margin: 0; color: #111827; font-size: 18px;">${

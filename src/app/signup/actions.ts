@@ -21,10 +21,10 @@ export async function signUpWithEmail(formData: FormData) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: Record<string, unknown>) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: Record<string, unknown>) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -49,10 +49,10 @@ export async function signOut() {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: Record<string, unknown>) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: Record<string, unknown>) {
           cookieStore.set({ name, value: '', ...options });
         },
       },

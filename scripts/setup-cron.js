@@ -9,8 +9,7 @@
  * 2. Follow the instructions to set up your cron job
  */
 
-const fs = require('fs');
-const path = require('path');
+// This script provides setup instructions for cron jobs
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 

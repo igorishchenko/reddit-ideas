@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { useState } from 'react';
 
 const TOPICS = [
   'devtools',
@@ -22,8 +22,8 @@ export default function SubscribePage() {
   } | null>(null);
 
   const handleTopicToggle = (topic: string) => {
-    setTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+    setTopics(prev =>
+      prev.includes(topic) ? prev.filter(t => t !== topic) : [...prev, topic]
     );
   };
 
@@ -58,7 +58,7 @@ export default function SubscribePage() {
           text: data.error || 'Failed to subscribe',
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
@@ -94,7 +94,7 @@ export default function SubscribePage() {
                   type='email'
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   className='w-full rounded-lg border border-gray-300 dark:border-white/15 bg-white/80 dark:bg-white/[.02] px-4 py-3 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-gray-900/20 dark:focus:ring-white/20'
                   placeholder='your@email.com'
                 />
@@ -106,7 +106,7 @@ export default function SubscribePage() {
                   Topics (select all that interest you)
                 </label>
                 <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
-                  {TOPICS.map((topic) => (
+                  {TOPICS.map(topic => (
                     <label
                       key={topic}
                       className='flex items-center space-x-2 cursor-pointer p-3 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'
@@ -140,7 +140,7 @@ export default function SubscribePage() {
                       name='frequency'
                       value='weekly'
                       checked={frequency === 'weekly'}
-                      onChange={(e) => setFrequency(e.target.value as 'weekly')}
+                      onChange={e => setFrequency(e.target.value as 'weekly')}
                       className='text-gray-900 focus:ring-gray-900/20'
                     />
                     <span className='text-sm text-gray-700 dark:text-gray-300'>
@@ -153,7 +153,7 @@ export default function SubscribePage() {
                       name='frequency'
                       value='daily'
                       checked={frequency === 'daily'}
-                      onChange={(e) => setFrequency(e.target.value as 'daily')}
+                      onChange={e => setFrequency(e.target.value as 'daily')}
                       className='text-gray-900 focus:ring-gray-900/20'
                     />
                     <span className='text-sm text-gray-700 dark:text-gray-300'>

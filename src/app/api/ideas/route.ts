@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
@@ -26,16 +26,18 @@ export async function GET() {
 
     // Transform data to match frontend format
     const transformedIdeas =
-      ideas?.map((idea) => ({
+      ideas?.map(idea => ({
         id: idea.id,
         name: idea.name,
         pitch: idea.pitch,
         painPoint: idea.pain_point,
         sources:
-          idea.idea_sources?.map((source) => ({
-            label: `r/${source.subreddit}`,
-            url: source.post_url,
-          })) || [],
+          idea.idea_sources?.map(
+            (source: { subreddit: string; post_url: string }) => ({
+              label: `r/${source.subreddit}`,
+              url: source.post_url,
+            })
+          ) || [],
         score: idea.overall_score,
         topic: idea.topic,
         isNew: idea.is_new,

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function UnsubscribePage() {
   const [loading, setLoading] = useState(false);
@@ -39,39 +39,7 @@ export default function UnsubscribePage() {
           text: data.error || 'Failed to unsubscribe',
         });
       }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Network error. Please try again.' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleManualUnsubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage(null);
-
-    try {
-      const response = await fetch('/api/unsubscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setMessage({ type: 'success', text: data.message });
-        setEmail(data.email || '');
-      } else {
-        setMessage({
-          type: 'error',
-          text: data.error || 'Failed to unsubscribe',
-        });
-      }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
