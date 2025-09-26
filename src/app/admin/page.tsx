@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { useEffect, useState } from 'react';
 
 type JobStatus = {
   success: boolean;
@@ -137,13 +137,6 @@ export default function AdminPage() {
                   {jobRunning ? 'Running Job...' : 'Run Idea Generation Job'}
                 </button>
                 <button
-                  onClick={sendNewsletter}
-                  disabled={newsletterSending}
-                  className='w-full inline-flex items-center justify-center rounded-full bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700 disabled:opacity-60'
-                >
-                  {newsletterSending ? 'Sending...' : 'Send Newsletter'}
-                </button>
-                <button
                   onClick={sendPersonalizedIdeas}
                   disabled={personalizedSending}
                   className='w-full inline-flex items-center justify-center rounded-full bg-purple-600 text-white px-4 py-2 text-sm font-semibold hover:bg-purple-700 disabled:opacity-60'
@@ -151,13 +144,6 @@ export default function AdminPage() {
                   {personalizedSending
                     ? 'Sending...'
                     : 'Send Personalized Ideas'}
-                </button>
-                <button
-                  onClick={fetchStatus}
-                  disabled={loading}
-                  className='w-full inline-flex items-center justify-center rounded-full border border-gray-300 dark:border-white/20 px-4 py-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5'
-                >
-                  {loading ? 'Refreshing...' : 'Refresh Status'}
                 </button>
               </div>
             </div>
@@ -199,43 +185,6 @@ export default function AdminPage() {
                     </span>
                     <span className='font-medium'>
                       {status.data.ideas.recent24h}
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <p className='text-sm text-gray-500'>No data available</p>
-              )}
-            </div>
-
-            {/* Posts Stats */}
-            <div className='rounded-2xl border border-black/[.06] dark:border-white/[.08] bg-white/80 dark:bg-white/[.02] p-6 backdrop-blur'>
-              <h2 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
-                Reddit Posts
-              </h2>
-              {status?.data?.posts ? (
-                <div className='space-y-2 text-sm'>
-                  <div className='flex justify-between'>
-                    <span className='text-gray-600 dark:text-gray-300'>
-                      Total Posts:
-                    </span>
-                    <span className='font-medium'>
-                      {status.data.posts.total}
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span className='text-gray-600 dark:text-gray-300'>
-                      Processed:
-                    </span>
-                    <span className='font-medium text-green-600'>
-                      {status.data.posts.processed}
-                    </span>
-                  </div>
-                  <div className='flex justify-between'>
-                    <span className='text-gray-600 dark:text-gray-300'>
-                      Pending:
-                    </span>
-                    <span className='font-medium text-orange-600'>
-                      {status.data.posts.pending}
                     </span>
                   </div>
                 </div>
