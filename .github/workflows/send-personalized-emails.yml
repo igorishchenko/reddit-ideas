@@ -1,11 +1,5 @@
 name: Send Personalized Ideas to Subscribers
 
-on:
-  schedule:
-    # Run every minute
-    - cron: '* * * * *'
-  workflow_dispatch: # Allow manual trigger
-
 jobs:
   send-personalized-emails:
     runs-on: ubuntu-latest
@@ -58,13 +52,13 @@ jobs:
         run: |
           echo "📧 Starting personalized email job..."
           echo "Target URL: $NEXT_PUBLIC_SITE_URL/api/jobs/send-personalized-ideas"
-          
+
           # Test if the endpoint is accessible
           if ! curl -s --head "$NEXT_PUBLIC_SITE_URL/api/jobs/send-personalized-ideas" | grep -q "200\|405"; then
             echo "❌ API endpoint is not accessible. Please ensure your application is deployed and running."
             exit 1
           fi
-          
+
           response=$(curl -s -X POST "$NEXT_PUBLIC_SITE_URL/api/jobs/send-personalized-ideas")
           echo "Response: $response"
 
